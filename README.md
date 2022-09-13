@@ -73,6 +73,10 @@ from sales_csv insert overwrite table sales_orc select *;
 Perform below menioned queries on "sales_order_orc" table :
 
 a. Calculate total sales per year
+ select year_id, sum(sales) from sales_orc group by year_id;
+ 2003   3516979.547241211
+ 2004   4724162.593389789
+ 2005   1791486.7089791992
 
 b. Find a product for which maximum orders were placed
 input: Select productline, max(qtyordered) as Max_orders from sales_orc group by productline;
