@@ -1,0 +1,2487 @@
+# to create database:
+
+create database project1;
+
+# to make the header print for the table
+set hive.cli.print.header=true;
+
+# Create the table agent_performance;
+
+hive> create table agent_performance
+    > (
+    > sl_no int,
+    > agent string,
+    > date string,
+    > login_time string,
+    > logout_time string,
+    > duration string)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.246 seconds
+
+
+# Loading Data from local system in the table agent_performance
+hive> load data local inpath "file:///tmp/Agentloggingdetails.csv" into table agent_performance;
+Loading data to table hive_msd.agent_performance
+Table hive_msd.agent_performance stats: [numFiles=1, totalSize=109853]
+OK
+Time taken: 0.941 seconds
+
+
+# Create Another table AgentPerformance feedback(AP)
+
+create table agent_performance_feedback
+    > (
+    > sl_no int,
+    > date string,
+    > agent string,
+    > chats int,
+    > avg_response_time string,
+    > avg_resolution_time string,
+    > avg_rating float,
+    > feedback int
+    > )
+    > row format delimited 
+    > fields terminated by ',';
+OK
+Time taken: 0.283 seconds
+
+hive> load data local inpath "file:///tmp/AgentPerformance.csv" into table agent_performance_feedback;
+
+Loading data to table hive_msd.agent_performance_feedback
+Table hive_msd.agent_performance_feedback stats: [numFiles=1, totalSize=109853]
+OK
+Time taken: 0.898 seconds
+
+
+3. List all the agent names
+select agent from agent_performance_feedback ;
+
+agent
+Agent Name
+Prerna Singh
+Nandani Gupta
+Ameya Jain
+Mahesh Sarade
+Swati 
+Mukesh 
+Saikumarreddy N
+Sanjeev Kumar
+Shubham Sharma
+Time taken: 0.428 seconds, Fetched: 10 row(s)
+
+## Find out agent average rating
+hive> select avg(avg_rating) as Average_rating from agent_performance_feedback;
+
+1.4609629649255012
+Time taken: 38.121 seconds, Fetched: 1 row(s)
+
+##Total working days for each agent
+
+
+
+
+## total query that each agent have taken:
+
+hive> select agent, sum(chats) from agent_performance_feedback group by agent;
+Query ID = cloudera_20220918230707_da7236c2-7b8d-413c-be29-9fa9cb76745d
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1663555222849_0012, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1663555222849_0012/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1663555222849_0012
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2022-09-18 23:07:47,512 Stage-1 map = 0%,  reduce = 0%
+2022-09-18 23:07:56,179 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.93 sec
+2022-09-18 23:08:04,579 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 3.97 sec
+MapReduce Total cumulative CPU time: 3 seconds 970 msec
+Ended Job = job_1663555222849_0012
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 3.97 sec   HDFS Read: 118679 HDFS Write: 1102 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 970 msec
+OK
+Abhishek 	0
+Aditya 	0
+Aditya Shinde	277
+Aditya_iot 	231
+Agent Name	NULL
+Amersh 	0
+Ameya Jain	322
+Anirudh 	81
+Ankit Sharma	0
+Ankitjha 	5
+Anurag Tiwari	4
+Aravind 	366
+Ashad Nasim	18
+Ashish 	0
+Ayushi Mishra	514
+Bharath 	369
+Boktiar Ahmed Bappy	452
+Chaitra K Hiremath	64
+Deepranjan Gupta	493
+Dibyanshu 	1
+Harikrishnan Shaji	381
+Hitesh Choudhary	1
+Hrisikesh Neogi	578
+Hyder Abbas	0
+Ineuron Intelligence 	0
+Ishawant Kumar	338
+Jawala Prakash	439
+Jayant Kumar	127
+Jaydeep Dixit	512
+Khushboo Priya	446
+Madhulika G	469
+Mahak 	7
+Mahesh Sarade	364
+Maitry 	542
+Maneesh 	4
+Manjunatha A	413
+Mithun S	503
+Mukesh 	19
+Mukesh Rao 	5
+Muskan Garg	56
+Nandani Gupta	560
+Nishtha Jain	373
+Nitin M	0
+Prabir Kumar Satapathy	299
+Prateek _iot 	190
+Prerna Singh	401
+Rishav Dash	409
+Rohan 	0
+Saif Khan	0
+Saikumarreddy N	364
+Samprit 	1
+Sandipan Saha	30
+Sanjeev Kumar	507
+Sanjeevan 	0
+Saurabh Shukla	16
+Shiva Srivastava	53
+Shivan K	357
+Shivan_S 	7
+Shivananda Sonwane	441
+Shubham Sharma	510
+Sowmiya Sivakumar	206
+Spuri 	0
+Sudhanshu Kumar	2
+Suraj S Bilgi	28
+Swati 	524
+Tarun 	22
+Uday Mishra	0
+Vasanth P	0
+Vivek 	44
+Wasim 	433
+Zeeshan 	542
+Time taken: 26.575 seconds, Fetched: 71 row(s)
+
+## total feedback each agent have recieved:
+select agent a, feedback f from agent_performance_feedback;
+
+Jayant Kumar	6
+Rishav Dash	17
+Sanjeev Kumar	11
+Maitry 	27
+Madhulika G	11
+Swati 	18
+Sanjeev Kumar	2
+Bharath 	13
+Nandani Gupta	16
+Ayushi Mishra	10
+Hrisikesh Neogi	21
+Deepranjan Gupta	19
+Shivan K	15
+Aravind 	15
+Anurag Tiwari	1
+Harikrishnan Shaji	1
+Mithun S	1
+Mukesh Rao 	3
+Prabir Kumar Satapathy	3
+Saurabh Shukla	3
+Maneesh 	0
+Aditya_iot 	6
+Prateek _iot 	13
+Zeeshan 	13
+Wasim 	26
+Nishtha Jain	20
+Ishawant Kumar	24
+Manjunatha A	14
+Boktiar Ahmed Bappy	12
+Khushboo Priya	19
+Sanjeevan 	0
+Mukesh 	0
+Hitesh Choudhary	0
+Anirudh 	0
+Ashish 	0
+Shiva Srivastava	0
+Dibyanshu 	0
+Shivananda Sonwane	0
+Uday Mishra	0
+Aditya Shinde	0
+Hyder Abbas	0
+Rishav Dash	0
+Samprit 	0
+Ankit Sharma	0
+Abhishek 	0
+Prerna Singh	0
+Muskan Garg	0
+Tarun 	0
+Ashad Nasim	0
+Amersh 	0
+Vasanth P	0
+Ineuron Intelligence 	0
+Sandipan Saha	0
+Shubham Sharma	0
+Mahak 	0
+Ameya Jain	0
+Saif Khan	0
+Ankitjha 	0
+Aditya 	0
+Ashish 	0
+Rohan 	0
+Sudhanshu Kumar	0
+Saikumarreddy N	0
+Spuri 	0
+Suraj S Bilgi	0
+Shivan_S 	0
+Sowmiya Sivakumar	0
+Mahesh Sarade	0
+Vivek 	0
+Nitin M	0
+Chaitra K Hiremath	0
+Jawala Prakash	0
+Jaydeep Dixit	0
+Rishav Dash	5
+Madhulika G	12
+Jayant Kumar	4
+Swati 	9
+Maitry 	12
+Madhulika G	9
+Jayant Kumar	3
+Rishav Dash	11
+Mukesh Rao 	1
+Shivan_S 	4
+Ayushi Mishra	13
+Maitry 	12
+Swati 	8
+Hrisikesh Neogi	14
+Bharath 	11
+Deepranjan Gupta	21
+Prateek _iot 	0
+Dibyanshu 	0
+Nandani Gupta	12
+Sudhanshu Kumar	1
+Shivan K	0
+Aditya Shinde	11
+Jaydeep Dixit	9
+Prerna Singh	8
+Shubham Sharma	12
+Shivananda Sonwane	14
+Anirudh 	0
+Jawala Prakash	15
+Sanjeev Kumar	0
+Sanjeevan 	0
+Mukesh 	0
+Hitesh Choudhary	0
+Mithun S	0
+Ashish 	0
+Shiva Srivastava	0
+Uday Mishra	0
+Aditya_iot 	0
+Hyder Abbas	0
+Prabir Kumar Satapathy	0
+Saurabh Shukla	0
+Rishav Dash	0
+Samprit 	0
+Ankit Sharma	0
+Abhishek 	0
+Wasim 	0
+Muskan Garg	0
+Tarun 	0
+Aravind 	0
+Amersh 	0
+Vasanth P	0
+Ineuron Intelligence 	0
+Ishawant Kumar	0
+Sandipan Saha	0
+Mahak 	0
+Ameya Jain	0
+Zeeshan 	0
+Ankitjha 	0
+Aditya 	0
+Saif Khan	0
+Anurag Tiwari	0
+Maneesh 	0
+Ashish 	0
+Harikrishnan Shaji	0
+Rohan 	0
+Saikumarreddy N	0
+Spuri 	0
+Suraj S Bilgi	0
+Mahesh Sarade	0
+Sowmiya Sivakumar	0
+Vivek 	0
+Nitin M	0
+Chaitra K Hiremath	0
+Boktiar Ahmed Bappy	2
+Manjunatha A	0
+Nishtha Jain	2
+Ashad Nasim	2
+Khushboo Priya	0
+Anirudh 	1
+Maneesh 	1
+Shivan K	0
+Vivek 	3
+Rishav Dash	11
+Ameya Jain	1
+Madhulika G	12
+Swati 	12
+Jayant Kumar	6
+Maitry 	13
+Sanjeev Kumar	11
+Ashad Nasim	7
+Mahak 	5
+Samprit 	0
+Ankitjha 	1
+Prabir Kumar Satapathy	1
+Mithun S	1
+Shivananda Sonwane	5
+Shubham Sharma	11
+Aditya Shinde	9
+Jaydeep Dixit	12
+Prerna Singh	3
+Jawala Prakash	10
+Sanjeevan 	0
+Mukesh 	0
+Hitesh Choudhary	0
+Ashish 	0
+Shiva Srivastava	0
+Dibyanshu 	0
+Hrisikesh Neogi	0
+Uday Mishra	0
+Aditya_iot 	0
+Hyder Abbas	0
+Saurabh Shukla	0
+Bharath 	0
+Deepranjan Gupta	0
+Rishav Dash	0
+Ankit Sharma	0
+Abhishek 	0
+Wasim 	0
+Muskan Garg	0
+Aravind 	0
+Tarun 	0
+Amersh 	0
+Vasanth P	0
+Ineuron Intelligence 	0
+Ishawant Kumar	0
+Sandipan Saha	0
+Zeeshan 	0
+Mukesh Rao 	0
+Aditya 	0
+Saif Khan	0
+Anurag Tiwari	0
+Ashish 	0
+Harikrishnan Shaji	0
+Prateek _iot 	0
+Rohan 	0
+Sudhanshu Kumar	0
+Saikumarreddy N	0
+Suraj S Bilgi	0
+Spuri 	0
+Nandani Gupta	0
+Shivan_S 	0
+Mahesh Sarade	0
+Sowmiya Sivakumar	0
+Nitin M	0
+Ayushi Mishra	0
+Chaitra K Hiremath	0
+Khushboo Priya	13
+Boktiar Ahmed Bappy	18
+Nishtha Jain	15
+Manjunatha A	13
+Nishtha Jain	2
+Khushboo Priya	12
+Ayushi Mishra	20
+Bharath 	14
+Nandani Gupta	15
+Shivan K	2
+Deepranjan Gupta	18
+Shivananda Sonwane	10
+Jaydeep Dixit	17
+Prerna Singh	9
+Aditya Shinde	9
+Shubham Sharma	12
+Hrisikesh Neogi	26
+Sanjeev Kumar	0
+Sanjeevan 	0
+Mukesh 	0
+Hitesh Choudhary	0
+Mithun S	0
+Anirudh 	0
+Ashish 	0
+Shiva Srivastava	0
+Dibyanshu 	0
+Uday Mishra	0
+Aditya_iot 	0
+Jayant Kumar	0
+Hyder Abbas	0
+Swati 	0
+Prabir Kumar Satapathy	0
+Saurabh Shukla	0
+Abhishek 	0
+Rishav Dash	0
+Ankit Sharma	0
+Samprit 	0
+Wasim 	0
+Maitry 	0
+Muskan Garg	0
+Aravind 	0
+Tarun 	0
+Ashad Nasim	0
+Amersh 	0
+Vasanth P	0
+Ineuron Intelligence 	0
+Ishawant Kumar	0
+Sandipan Saha	0
+Mahak 	0
+Rishav Dash	0
+Ameya Jain	0
+Zeeshan 	0
+Mukesh Rao 	0
+Aditya 	0
+Ankitjha 	0
+Saif Khan	0
+Anurag Tiwari	0
+Maneesh 	0
+Ashish 	0
+Harikrishnan Shaji	0
+Prateek _iot 	0
+Rohan 	0
+Sudhanshu Kumar	0
+Saikumarreddy N	0
+Spuri 	0
+Suraj S Bilgi	0
+Shivan_S 	0
+Mahesh Sarade	0
+Sowmiya Sivakumar	0
+Vivek 	0
+Nitin M	0
+Madhulika G	0
+Chaitra K Hiremath	0
+Jawala Prakash	5
+Boktiar Ahmed Bappy	14
+Manjunatha A	15
+Jawala Prakash	10
+Boktiar Ahmed Bappy	17
+Manjunatha A	9
+Aditya Shinde	19
+Bharath 	9
+Deepranjan Gupta	20
+Nandani Gupta	15
+Shivan K	1
+Maitry 	21
+Jayant Kumar	17
+Rishav Dash	15
+Swati 	21
+Sanjeevan 	0
+Mukesh 	0
+Hitesh Choudhary	0
+Mithun S	0
+Anirudh 	0
+Shiva Srivastava	0
+Ashish 	0
+Dibyanshu 	0
+Hrisikesh Neogi	0
+Uday Mishra	0
+Aditya_iot 	0
+Nishtha Jain	0
+Hyder Abbas	0
+Prabir Kumar Satapathy	0
+Saurabh Shukla	0
+Abhishek 	0
+Rishav Dash	0
+Ankit Sharma	0
+Samprit 	0
+Wasim 	0
+Prerna Singh	0
+Muskan Garg	0
+Aravind 	0
+Tarun 	0
+Ashad Nasim	0
+Khushboo Priya	0
+Vasanth P	0
+Amersh 	0
+Ineuron Intelligence 	0
+Ishawant Kumar	0
+Sandipan Saha	0
+Shubham Sharma	0
+Mahak 	0
+Ameya Jain	0
+Zeeshan 	0
+Mukesh Rao 	0
+Aditya 	0
+Ankitjha 	0
+Saif Khan	0
+Anurag Tiwari	0
+Maneesh 	0
+Harikrishnan Shaji	0
+Ashish 	0
+Prateek _iot 	0
+Rohan 	0
+Saikumarreddy N	0
+Sudhanshu Kumar	0
+Spuri 	0
+Suraj S Bilgi	0
+Shivan_S 	0
+Mahesh Sarade	0
+Sowmiya Sivakumar	0
+Vivek 	0
+Nitin M	0
+Jaydeep Dixit	0
+Chaitra K Hiremath	0
+Sanjeev Kumar	14
+Shivananda Sonwane	1
+Madhulika G	2
+Ayushi Mishra	22
+Madhulika G	3
+Shivananda Sonwane	10
+Sanjeev Kumar	12
+Ayushi Mishra	12
+Nandani Gupta	37
+Aditya Shinde	28
+Bharath 	14
+Deepranjan Gupta	24
+Hrisikesh Neogi	28
+Prerna Singh	20
+Shubham Sharma	9
+Jaydeep Dixit	16
+Khushboo Priya	25
+Sanjeevan 	0
+Mukesh 	0
+Hitesh Choudhary	0
+Mithun S	0
+Anirudh 	0
+Shiva Srivastava	0
+Ashish 	0
+Dibyanshu 	0
+Uday Mishra	0
+Aditya_iot 	0
+Jayant Kumar	0
+Nishtha Jain	0
+Hyder Abbas	0
+Swati 	0
+Prabir Kumar Satapathy	0
+Saurabh Shukla	0
+Abhishek 	0
+Rishav Dash	0
+Ankit Sharma	0
+Samprit 	0
+Wasim 	0
+Maitry 	0
+Muskan Garg	0
+Aravind 	0
+Tarun 	0
+Ashad Nasim	0
+Vasanth P	0
+Amersh 	0
+Ineuron Intelligence 	0
+Ishawant Kumar	0
+Sandipan Saha	0
+Mahak 	0
+Rishav Dash	0
+Ameya Jain	0
+Zeeshan 	0
+Mukesh Rao 	0
+Aditya 	0
+Ankitjha 	0
+Saif Khan	0
+Anurag Tiwari	0
+Maneesh 	0
+Harikrishnan Shaji	0
+Ashish 	0
+Prateek _iot 	0
+Rohan 	0
+Saikumarreddy N	0
+Sudhanshu Kumar	0
+Spuri 	0
+Suraj S Bilgi	0
+Shivan_S 	0
+Mahesh Sarade	0
+Sowmiya Sivakumar	0
+Shivan K	0
+Nitin M	0
+Vivek 	0
+Chaitra K Hiremath	0
+Boktiar Ahmed Bappy	6
+Jawala Prakash	3
+Manjunatha A	4
+Manjunatha A	12
+Jawala Prakash	6
+Saurabh Shukla	2
+Jayant Kumar	4
+Boktiar Ahmed Bappy	11
+Rishav Dash	11
+Maitry 	14
+Madhulika G	14
+Swati 	9
+Sanjeev Kumar	13
+Shivan K	1
+Prerna Singh	11
+Shubham Sharma	13
+Jaydeep Dixit	13
+Shivananda Sonwane	14
+Khushboo Priya	18
+Hrisikesh Neogi	9
+Tarun 	6
+Sanjeevan 	0
+Mukesh 	0
+Hitesh Choudhary	0
+Mithun S	0
+Anirudh 	0
+Shiva Srivastava	0
+Ashish 	0
+Dibyanshu 	0
+Uday Mishra	0
+Aditya_iot 	0
+Nishtha Jain	0
+Aditya Shinde	0
+Hyder Abbas	0
+Prabir Kumar Satapathy	0
+Bharath 	0
+Deepranjan Gupta	0
+Abhishek 	0
+Rishav Dash	0
+Ankit Sharma	0
+Samprit 	0
+Wasim 	0
+Muskan Garg	0
+Aravind 	0
+Ashad Nasim	0
+Vasanth P	0
+Amersh 	0
+Ineuron Intelligence 	0
+Ishawant Kumar	0
+Sandipan Saha	0
+Mahak 	0
+Ameya Jain	0
+Mukesh Rao 	0
+Zeeshan 	0
+Aditya 	0
+Ankitjha 	0
+Saif Khan	0
+Anurag Tiwari	0
+Maneesh 	0
+Harikrishnan Shaji	0
+Ashish 	0
+Prateek _iot 	0
+Rohan 	0
+Saikumarreddy N	0
+Sudhanshu Kumar	0
+Spuri 	0
+Suraj S Bilgi	0
+Nandani Gupta	0
+Shivan_S 	0
+Mahesh Sarade	0
+Sowmiya Sivakumar	0
+Nitin M	0
+Vivek 	0
+Ayushi Mishra	0
+Chaitra K Hiremath	0
+Time taken: 0.841 seconds, Fetched: 2161 row(s)
+
+##Agent name who have average rating between 3.5 to 4:
+
+hive> select agent, avg_rating from agent_performance_feedback where avg_rating between 3.5 and 4;
+OK
+Swati 	3.67
+Manjunatha A	3.6
+Boktiar Ahmed Bappy	4.0
+Prateek _iot 	3.75
+Nandani Gupta	3.79
+Jaydeep Dixit	3.95
+Mahesh Sarade	3.94
+Zeeshan 	3.79
+Hrisikesh Neogi	3.77
+Muskan Garg	4.0
+Khushboo Priya	3.79
+Wasim 	3.95
+Jawala Prakash	3.89
+Shiva Srivastava	4.0
+Nishtha Jain	3.67
+Maitry 	4.0
+Shiva Srivastava	4.0
+Nandani Gupta	3.61
+Prerna Singh	3.8
+Shivan K	4.0
+Boktiar Ahmed Bappy	3.8
+Muskan Garg	3.62
+Chaitra K Hiremath	4.0
+Harikrishnan Shaji	3.73
+Wasim 	3.92
+Deepranjan Gupta	3.69
+Mahesh Sarade	3.81
+Nishtha Jain	3.92
+Shivan K	3.9
+Madhulika G	3.62
+Rishav Dash	3.8
+Prabir Kumar Satapathy	4.0
+Boktiar Ahmed Bappy	4.0
+Maitry 	3.73
+Nishtha Jain	3.69
+Khushboo Priya	3.95
+Boktiar Ahmed Bappy	3.77
+Mahesh Sarade	3.5
+Rishav Dash	3.67
+Mithun S	3.75
+Jawala Prakash	3.68
+Aditya_iot 	3.86
+Swati 	3.77
+Nandani Gupta	3.73
+Madhulika G	3.86
+Boktiar Ahmed Bappy	3.9
+Madhulika G	4.0
+Ishawant Kumar	3.75
+Boktiar Ahmed Bappy	3.81
+Deepranjan Gupta	3.75
+Deepranjan Gupta	3.56
+Harikrishnan Shaji	3.93
+Ishawant Kumar	4.0
+Khushboo Priya	4.0
+Nandani Gupta	3.67
+Mahesh Sarade	3.81
+Swati 	3.76
+Maitry 	3.73
+Rishav Dash	3.89
+Madhulika G	3.87
+Ayushi Mishra	3.88
+Shivananda Sonwane	3.53
+Ameya Jain	4.0
+Mahesh Sarade	3.85
+Mithun S	3.85
+Ishawant Kumar	3.67
+Khushboo Priya	3.5
+Boktiar Ahmed Bappy	4.0
+Aditya_iot 	3.53
+Jawala Prakash	4.0
+Sanjeev Kumar	4.0
+Sandipan Saha	3.62
+Madhulika G	3.82
+Ayushi Mishra	3.86
+Shivan K	4.0
+Hrisikesh Neogi	3.8
+Nandani Gupta	3.89
+Harikrishnan Shaji	3.7
+Nishtha Jain	3.67
+Manjunatha A	4.0
+Anirudh 	3.77
+Swati 	3.62
+Maitry 	3.75
+Madhulika G	4.0
+Jaydeep Dixit	4.0
+Zeeshan 	3.75
+Nishtha Jain	3.73
+Wasim 	3.64
+Manjunatha A	4.0
+Ishawant Kumar	3.67
+Jayant Kumar	3.76
+Maneesh 	4.0
+Harikrishnan Shaji	4.0
+Anurag Tiwari	3.5
+Mithun S	3.86
+Prabir Kumar Satapathy	4.0
+Saurabh Shukla	3.67
+Aditya_iot 	3.83
+Maitry 	3.92
+Shivananda Sonwane	3.71
+Ameya Jain	4.0
+Swati 	4.0
+Ashad Nasim	4.0
+Prabir Kumar Satapathy	4.0
+Boktiar Ahmed Bappy	3.78
+Nishtha Jain	4.0
+Ayushi Mishra	3.8
+Shivan K	4.0
+Shubham Sharma	4.0
+Jawala Prakash	3.8
+Sanjeev Kumar	4.0
+Aditya Shinde	3.54
+Deepranjan Gupta	3.71
+Sanjeev Kumar	4.0
+Time taken: 0.094 seconds, Fetched: 114 row(s)
+
+##Agent name who have average rating less than 3.5:
+
+select agent, avg_rating from agent_performance_feedback where avg_rating < 3.5 ;
+
+Wasim 	0.0
+Maitry 	0.0
+Muskan Garg	0.0
+Tarun 	0.0
+Ashad Nasim	0.0
+Boktiar Ahmed Bappy	0.0
+Amersh 	0.0
+Vasanth P	0.0
+Shubham Sharma	0.0
+Ineuron Intelligence 	0.0
+Sandipan Saha	0.0
+Mahak 	0.0
+Ameya Jain	0.0
+Mukesh Rao 	0.0
+Zeeshan 	0.0
+Saif Khan	0.0
+Ankitjha 	0.0
+Aditya 	0.0
+Anurag Tiwari	0.0
+Maneesh 	0.0
+Ashish 	0.0
+Prateek _iot 	0.0
+Saikumarreddy N	0.0
+Sudhanshu Kumar	0.0
+Rohan 	0.0
+Suraj S Bilgi	0.0
+Spuri 	0.0
+Shivan_S 	0.0
+Vivek 	0.0
+Nitin M	0.0
+Jaydeep Dixit	0.0
+Chaitra K Hiremath	0.0
+Jawala Prakash	0.0
+Sowmiya Sivakumar	0.0
+Mahesh Sarade	3.11
+Sanjeevan 	0.0
+Mukesh 	0.0
+Hitesh Choudhary	0.0
+Ashish 	0.0
+Shiva Srivastava	0.0
+Dibyanshu 	0.0
+Uday Mishra	0.0
+Aditya_iot 	0.0
+Jayant Kumar	0.0
+Hyder Abbas	0.0
+Mithun S	0.0
+Swati 	0.0
+Rishav Dash	0.0
+Samprit 	0.0
+Ankit Sharma	0.0
+Abhishek 	0.0
+Wasim 	0.0
+Maitry 	0.0
+Muskan Garg	0.0
+Tarun 	0.0
+Ashad Nasim	0.0
+Amersh 	0.0
+Vasanth P	0.0
+Ineuron Intelligence 	0.0
+Sandipan Saha	0.0
+Mahak 	0.0
+Rishav Dash	0.0
+Ameya Jain	0.0
+Zeeshan 	0.0
+Mukesh Rao 	0.0
+Saif Khan	0.0
+Ankitjha 	0.0
+Aditya 	0.0
+Anurag Tiwari	0.0
+Prateek _iot 	0.0
+Ashish 	0.0
+Sudhanshu Kumar	0.0
+Saikumarreddy N	0.0
+Rohan 	0.0
+Spuri 	0.0
+Suraj S Bilgi	0.0
+Shivan_S 	0.0
+Sowmiya Sivakumar	0.0
+Vivek 	0.0
+Nitin M	0.0
+Chaitra K Hiremath	0.0
+Jawala Prakash	0.0
+Vivek 	3.4
+Mahesh Sarade	3.27
+Mukesh Rao 	1.0
+Sanjeevan 	0.0
+Mukesh 	0.0
+Hitesh Choudhary	0.0
+Ashish 	0.0
+Shiva Srivastava	0.0
+Dibyanshu 	0.0
+Hrisikesh Neogi	0.0
+Uday Mishra	0.0
+Hyder Abbas	0.0
+Saurabh Shukla	0.0
+Deepranjan Gupta	0.0
+Bharath 	0.0
+Rishav Dash	0.0
+Samprit 	0.0
+Ankit Sharma	0.0
+Abhishek 	0.0
+Wasim 	0.0
+Muskan Garg	0.0
+Tarun 	0.0
+Ashad Nasim	0.0
+Amersh 	0.0
+Vasanth P	0.0
+Ineuron Intelligence 	0.0
+Sandipan Saha	0.0
+Mahak 	0.0
+Ameya Jain	0.0
+Saif Khan	0.0
+Ankitjha 	0.0
+Aditya 	0.0
+Maneesh 	0.0
+Ashish 	0.0
+Sudhanshu Kumar	0.0
+Saikumarreddy N	0.0
+Rohan 	0.0
+Spuri 	0.0
+Suraj S Bilgi	0.0
+Nandani Gupta	0.0
+Shivan_S 	0.0
+Sowmiya Sivakumar	0.0
+Shivan K	0.0
+Nitin M	0.0
+Ayushi Mishra	0.0
+Chaitra K Hiremath	0.0
+Jayant Kumar	3.17
+Sanjeev Kumar	3.0
+Anurag Tiwari	2.0
+Harikrishnan Shaji	1.0
+Mithun S	2.0
+Mukesh Rao 	1.67
+Maneesh 	0.0
+Sanjeevan 	0.0
+Mukesh 	0.0
+Hitesh Choudhary	0.0
+Anirudh 	0.0
+Ashish 	0.0
+Shiva Srivastava	0.0
+Dibyanshu 	0.0
+Shivananda Sonwane	0.0
+Uday Mishra	0.0
+Aditya Shinde	0.0
+Hyder Abbas	0.0
+Rishav Dash	0.0
+Samprit 	0.0
+Ankit Sharma	0.0
+Abhishek 	0.0
+Prerna Singh	0.0
+Muskan Garg	0.0
+Tarun 	0.0
+Ashad Nasim	0.0
+Amersh 	0.0
+Vasanth P	0.0
+Ineuron Intelligence 	0.0
+Sandipan Saha	0.0
+Shubham Sharma	0.0
+Mahak 	0.0
+Ameya Jain	0.0
+Saif Khan	0.0
+Ankitjha 	0.0
+Aditya 	0.0
+Ashish 	0.0
+Rohan 	0.0
+Sudhanshu Kumar	0.0
+Saikumarreddy N	0.0
+Spuri 	0.0
+Suraj S Bilgi	0.0
+Shivan_S 	0.0
+Sowmiya Sivakumar	0.0
+Mahesh Sarade	0.0
+Vivek 	0.0
+Nitin M	0.0
+Chaitra K Hiremath	0.0
+Jawala Prakash	0.0
+Jaydeep Dixit	0.0
+Prateek _iot 	0.0
+Dibyanshu 	0.0
+Shivan K	0.0
+Anirudh 	0.0
+Sanjeev Kumar	0.0
+Sanjeevan 	0.0
+Mukesh 	0.0
+Hitesh Choudhary	0.0
+Mithun S	0.0
+Ashish 	0.0
+Shiva Srivastava	0.0
+Uday Mishra	0.0
+Aditya_iot 	0.0
+Hyder Abbas	0.0
+Prabir Kumar Satapathy	0.0
+Saurabh Shukla	0.0
+Rishav Dash	0.0
+Samprit 	0.0
+Ankit Sharma	0.0
+Abhishek 	0.0
+Wasim 	0.0
+Muskan Garg	0.0
+Tarun 	0.0
+Aravind 	0.0
+Amersh 	0.0
+Vasanth P	0.0
+Ineuron Intelligence 	0.0
+Ishawant Kumar	0.0
+Sandipan Saha	0.0
+Mahak 	0.0
+Ameya Jain	0.0
+Zeeshan 	0.0
+Ankitjha 	0.0
+Aditya 	0.0
+Saif Khan	0.0
+Anurag Tiwari	0.0
+Maneesh 	0.0
+Ashish 	0.0
+Harikrishnan Shaji	0.0
+Rohan 	0.0
+Saikumarreddy N	0.0
+Spuri 	0.0
+Suraj S Bilgi	0.0
+Mahesh Sarade	0.0
+Sowmiya Sivakumar	0.0
+Vivek 	0.0
+Nitin M	0.0
+Chaitra K Hiremath	0.0
+Manjunatha A	0.0
+Ashad Nasim	1.0
+Khushboo Priya	0.0
+Anirudh 	1.0
+Maneesh 	1.0
+Shivan K	0.0
+Jayant Kumar	3.33
+Mahak 	3.0
+Samprit 	0.0
+Mithun S	1.0
+Shivananda Sonwane	3.4
+Prerna Singh	3.33
+Sanjeevan 	0.0
+Mukesh 	0.0
+Hitesh Choudhary	0.0
+Ashish 	0.0
+Shiva Srivastava	0.0
+Dibyanshu 	0.0
+Hrisikesh Neogi	0.0
+Uday Mishra	0.0
+Aditya_iot 	0.0
+Hyder Abbas	0.0
+Saurabh Shukla	0.0
+Bharath 	0.0
+Deepranjan Gupta	0.0
+Rishav Dash	0.0
+Ankit Sharma	0.0
+Abhishek 	0.0
+Wasim 	0.0
+Muskan Garg	0.0
+Aravind 	0.0
+Tarun 	0.0
+Amersh 	0.0
+Vasanth P	0.0
+Ineuron Intelligence 	0.0
+Ishawant Kumar	0.0
+Sandipan Saha	0.0
+Zeeshan 	0.0
+Mukesh Rao 	0.0
+Aditya 	0.0
+Saif Khan	0.0
+Anurag Tiwari	0.0
+Ashish 	0.0
+Harikrishnan Shaji	0.0
+Prateek _iot 	0.0
+Rohan 	0.0
+Sudhanshu Kumar	0.0
+Saikumarreddy N	0.0
+Suraj S Bilgi	0.0
+Spuri 	0.0
+Nandani Gupta	0.0
+Shivan_S 	0.0
+Mahesh Sarade	0.0
+Sowmiya Sivakumar	0.0
+Nitin M	0.0
+Ayushi Mishra	0.0
+Chaitra K Hiremath	0.0
+Sanjeev Kumar	0.0
+Sanjeevan 	0.0
+Mukesh 	0.0
+Hitesh Choudhary	0.0
+Mithun S	0.0
+Anirudh 	0.0
+Ashish 	0.0
+Shiva Srivastava	0.0
+Dibyanshu 	0.0
+Uday Mishra	0.0
+Aditya_iot 	0.0
+Jayant Kumar	0.0
+Hyder Abbas	0.0
+Swati 	0.0
+Prabir Kumar Satapathy	0.0
+Saurabh Shukla	0.0
+Abhishek 	0.0
+Rishav Dash	0.0
+Ankit Sharma	0.0
+Samprit 	0.0
+Wasim 	0.0
+Maitry 	0.0
+Muskan Garg	0.0
+Aravind 	0.0
+Tarun 	0.0
+Ashad Nasim	0.0
+Amersh 	0.0
+Vasanth P	0.0
+Ineuron Intelligence 	0.0
+Ishawant Kumar	0.0
+Sandipan Saha	0.0
+Mahak 	0.0
+Rishav Dash	0.0
+Ameya Jain	0.0
+Zeeshan 	0.0
+Mukesh Rao 	0.0
+Aditya 	0.0
+Ankitjha 	0.0
+Saif Khan	0.0
+Anurag Tiwari	0.0
+Maneesh 	0.0
+Ashish 	0.0
+Harikrishnan Shaji	0.0
+Prateek _iot 	0.0
+Rohan 	0.0
+Sudhanshu Kumar	0.0
+Saikumarreddy N	0.0
+Spuri 	0.0
+Suraj S Bilgi	0.0
+Shivan_S 	0.0
+Mahesh Sarade	0.0
+Sowmiya Sivakumar	0.0
+Vivek 	0.0
+Nitin M	0.0
+Madhulika G	0.0
+Chaitra K Hiremath	0.0
+Shivan K	1.0
+Jayant Kumar	3.24
+Sanjeevan 	0.0
+Mukesh 	0.0
+Hitesh Choudhary	0.0
+Mithun S	0.0
+Anirudh 	0.0
+Shiva Srivastava	0.0
+Ashish 	0.0
+Dibyanshu 	0.0
+Hrisikesh Neogi	0.0
+Uday Mishra	0.0
+Aditya_iot 	0.0
+Nishtha Jain	0.0
+Hyder Abbas	0.0
+Prabir Kumar Satapathy	0.0
+Saurabh Shukla	0.0
+Abhishek 	0.0
+Rishav Dash	0.0
+Ankit Sharma	0.0
+Samprit 	0.0
+Wasim 	0.0
+Prerna Singh	0.0
+Muskan Garg	0.0
+Aravind 	0.0
+Tarun 	0.0
+Ashad Nasim	0.0
+Khushboo Priya	0.0
+Vasanth P	0.0
+Amersh 	0.0
+Ineuron Intelligence 	0.0
+Ishawant Kumar	0.0
+Sandipan Saha	0.0
+Shubham Sharma	0.0
+Mahak 	0.0
+Ameya Jain	0.0
+Zeeshan 	0.0
+Mukesh Rao 	0.0
+Aditya 	0.0
+Ankitjha 	0.0
+Saif Khan	0.0
+Anurag Tiwari	0.0
+Maneesh 	0.0
+Harikrishnan Shaji	0.0
+Ashish 	0.0
+Prateek _iot 	0.0
+Rohan 	0.0
+Saikumarreddy N	0.0
+Sudhanshu Kumar	0.0
+Spuri 	0.0
+Suraj S Bilgi	0.0
+Shivan_S 	0.0
+Mahesh Sarade	0.0
+Sowmiya Sivakumar	0.0
+Vivek 	0.0
+Nitin M	0.0
+Jaydeep Dixit	0.0
+Chaitra K Hiremath	0.0
+Nandani Gupta	3.43
+Sanjeevan 	0.0
+Mukesh 	0.0
+Hitesh Choudhary	0.0
+Mithun S	0.0
+Anirudh 	0.0
+Shiva Srivastava	0.0
+Ashish 	0.0
+Dibyanshu 	0.0
+Uday Mishra	0.0
+Aditya_iot 	0.0
+Jayant Kumar	0.0
+Nishtha Jain	0.0
+Hyder Abbas	0.0
+Swati 	0.0
+Prabir Kumar Satapathy	0.0
+Saurabh Shukla	0.0
+Abhishek 	0.0
+Rishav Dash	0.0
+Ankit Sharma	0.0
+Samprit 	0.0
+Wasim 	0.0
+Maitry 	0.0
+Muskan Garg	0.0
+Aravind 	0.0
+Tarun 	0.0
+Ashad Nasim	0.0
+Vasanth P	0.0
+Amersh 	0.0
+Ineuron Intelligence 	0.0
+Ishawant Kumar	0.0
+Sandipan Saha	0.0
+Mahak 	0.0
+Rishav Dash	0.0
+Ameya Jain	0.0
+Zeeshan 	0.0
+Mukesh Rao 	0.0
+Aditya 	0.0
+Ankitjha 	0.0
+Saif Khan	0.0
+Anurag Tiwari	0.0
+Maneesh 	0.0
+Harikrishnan Shaji	0.0
+Ashish 	0.0
+Prateek _iot 	0.0
+Rohan 	0.0
+Saikumarreddy N	0.0
+Sudhanshu Kumar	0.0
+Spuri 	0.0
+Suraj S Bilgi	0.0
+Shivan_S 	0.0
+Mahesh Sarade	0.0
+Sowmiya Sivakumar	0.0
+Shivan K	0.0
+Nitin M	0.0
+Vivek 	0.0
+Chaitra K Hiremath	0.0
+Saurabh Shukla	3.0
+Tarun 	1.5
+Sanjeevan 	0.0
+Mukesh 	0.0
+Hitesh Choudhary	0.0
+Mithun S	0.0
+Anirudh 	0.0
+Shiva Srivastava	0.0
+Ashish 	0.0
+Dibyanshu 	0.0
+Uday Mishra	0.0
+Aditya_iot 	0.0
+Nishtha Jain	0.0
+Aditya Shinde	0.0
+Hyder Abbas	0.0
+Prabir Kumar Satapathy	0.0
+Bharath 	0.0
+Deepranjan Gupta	0.0
+Abhishek 	0.0
+Rishav Dash	0.0
+Ankit Sharma	0.0
+Samprit 	0.0
+Wasim 	0.0
+Muskan Garg	0.0
+Aravind 	0.0
+Ashad Nasim	0.0
+Vasanth P	0.0
+Amersh 	0.0
+Ineuron Intelligence 	0.0
+Ishawant Kumar	0.0
+Sandipan Saha	0.0
+Mahak 	0.0
+Ameya Jain	0.0
+Mukesh Rao 	0.0
+Zeeshan 	0.0
+Aditya 	0.0
+Ankitjha 	0.0
+Saif Khan	0.0
+Anurag Tiwari	0.0
+Maneesh 	0.0
+Harikrishnan Shaji	0.0
+Ashish 	0.0
+Prateek _iot 	0.0
+Rohan 	0.0
+Saikumarreddy N	0.0
+Sudhanshu Kumar	0.0
+Spuri 	0.0
+Suraj S Bilgi	0.0
+Nandani Gupta	0.0
+Shivan_S 	0.0
+Mahesh Sarade	0.0
+Sowmiya Sivakumar	0.0
+Nitin M	0.0
+Vivek 	0.0
+Ayushi Mishra	0.0
+Chaitra K Hiremath	0.0
+Time taken: 0.107 seconds, Fetched: 1474 row(s)
+
+## Agent name who have avg rating more than 4.5:
+hive> select agent, avg_rating from agent_performance_feedback where avg_rating > 4.5 ;
+OK
+Ameya Jain	4.55
+Mahesh Sarade	4.71
+Mukesh 	4.62
+Saikumarreddy N	5.0
+Sanjeev Kumar	5.0
+Harikrishnan Shaji	4.57
+Sowmiya Sivakumar	4.75
+Boktiar Ahmed Bappy	4.75
+Shivananda Sonwane	5.0
+Ishawant Kumar	4.67
+Deepranjan Gupta	4.8
+Shivananda Sonwane	4.67
+Muskan Garg	5.0
+Aditya_iot 	4.6
+Mukesh 	4.67
+Chaitra K Hiremath	5.0
+Suraj S Bilgi	5.0
+Mithun S	4.8
+Wasim 	4.71
+Bharath 	4.85
+Ishawant Kumar	5.0
+Jawala Prakash	4.83
+Ayushi Mishra	5.0
+Ameya Jain	4.64
+Bharath 	4.79
+Ishawant Kumar	4.75
+Shivananda Sonwane	5.0
+Ishawant Kumar	4.88
+Prateek _iot 	4.83
+Sanjeev Kumar	4.82
+Nandani Gupta	4.62
+Saikumarreddy N	4.59
+Ameya Jain	5.0
+Khushboo Priya	4.71
+Wasim 	4.53
+Manjunatha A	4.54
+Bharath 	4.88
+Maitry 	5.0
+Ayushi Mishra	5.0
+Deepranjan Gupta	5.0
+Muskan Garg	4.6
+Prateek _iot 	5.0
+Saikumarreddy N	4.71
+Jaydeep Dixit	4.78
+Khushboo Priya	4.6
+Madhulika G	4.56
+Deepranjan Gupta	4.88
+Shivananda Sonwane	5.0
+Shivananda Sonwane	4.62
+Prateek _iot 	4.56
+Aditya_iot 	4.56
+Ameya Jain	4.8
+Sanjeev Kumar	4.57
+Prerna Singh	4.62
+Shivan K	4.78
+Bharath 	4.79
+Jawala Prakash	4.64
+Maitry 	5.0
+Deepranjan Gupta	4.69
+Shiva Srivastava	5.0
+Jawala Prakash	4.56
+Jaydeep Dixit	4.67
+Swati 	4.53
+Shubham Sharma	4.67
+Ameya Jain	4.56
+Aravind 	4.53
+Zeeshan 	4.85
+Saikumarreddy N	4.57
+Hrisikesh Neogi	4.8
+Bharath 	4.8
+Maitry 	4.84
+Prerna Singh	4.57
+Mahesh Sarade	4.53
+Sanjeev Kumar	4.54
+Saikumarreddy N	4.85
+Harikrishnan Shaji	4.89
+Shivan K	4.72
+Hrisikesh Neogi	4.53
+Mithun S	4.53
+Ishawant Kumar	5.0
+Shivananda Sonwane	4.85
+Jawala Prakash	4.75
+Aditya_iot 	5.0
+Nandani Gupta	4.53
+Sanjeev Kumar	4.84
+Chaitra K Hiremath	5.0
+Wasim 	4.56
+Madhulika G	4.92
+Khushboo Priya	5.0
+Prabir Kumar Satapathy	4.86
+Bharath 	4.69
+Ayushi Mishra	4.83
+Ameya Jain	4.65
+Jaydeep Dixit	4.55
+Shubham Sharma	4.55
+Wasim 	4.89
+Hrisikesh Neogi	4.64
+Manjunatha A	4.64
+Bharath 	4.67
+Ishawant Kumar	4.62
+Prerna Singh	4.62
+Ameya Jain	4.64
+Shubham Sharma	4.84
+Mahesh Sarade	4.67
+Zeeshan 	4.73
+Khushboo Priya	4.58
+Wasim 	4.94
+Manjunatha A	4.87
+Bharath 	4.89
+Aravind 	4.84
+Harikrishnan Shaji	4.81
+Shivananda Sonwane	4.55
+Maitry 	4.94
+Saikumarreddy N	4.69
+Sanjeev Kumar	4.53
+Jaydeep Dixit	4.82
+Aravind 	4.63
+Shivan K	4.76
+Khushboo Priya	4.75
+Wasim 	4.88
+Hrisikesh Neogi	4.67
+Prabir Kumar Satapathy	4.78
+Shivananda Sonwane	4.56
+Ayushi Mishra	4.59
+Prateek _iot 	5.0
+Jaydeep Dixit	4.91
+Shubham Sharma	4.73
+Rishav Dash	4.71
+Wasim 	4.81
+Shivan K	4.79
+Mithun S	4.8
+Bharath 	4.73
+Manjunatha A	4.57
+Ishawant Kumar	4.67
+Khushboo Priya	5.0
+Boktiar Ahmed Bappy	4.6
+Manjunatha A	4.57
+Hrisikesh Neogi	4.91
+Saikumarreddy N	4.82
+Aravind 	4.67
+Wasim 	4.6
+Sudhanshu Kumar	5.0
+Madhulika G	5.0
+Sanjeev Kumar	4.56
+Nandani Gupta	4.64
+Saikumarreddy N	4.67
+Aravind 	4.54
+Shubham Sharma	4.9
+Aditya Shinde	4.53
+Prerna Singh	5.0
+Sandipan Saha	5.0
+Manjunatha A	5.0
+Boktiar Ahmed Bappy	5.0
+Nishtha Jain	5.0
+Khushboo Priya	4.75
+Nishtha Jain	5.0
+Ishawant Kumar	5.0
+Jaydeep Dixit	4.9
+Shivananda Sonwane	4.88
+Shubham Sharma	4.92
+Prerna Singh	4.64
+Harikrishnan Shaji	4.78
+Sanjeev Kumar	4.61
+Prateek _iot 	5.0
+Aditya_iot 	4.8
+Shivan K	5.0
+Deepranjan Gupta	5.0
+Bharath 	4.58
+Aravind 	4.77
+Wasim 	4.78
+Ameya Jain	4.53
+Harikrishnan Shaji	4.7
+Manjunatha A	4.67
+Khushboo Priya	4.8
+Maitry 	4.73
+Swati 	4.64
+Swati 	4.67
+Maitry 	4.85
+Madhulika G	4.71
+Prateek _iot 	5.0
+Wasim 	4.6
+Bharath 	4.71
+Aravind 	4.65
+Shubham Sharma	4.92
+Shivananda Sonwane	4.73
+Prerna Singh	4.67
+Aditya Shinde	5.0
+Prabir Kumar Satapathy	4.75
+Ishawant Kumar	4.67
+Khushboo Priya	4.67
+Harikrishnan Shaji	4.64
+Aditya Shinde	4.89
+Shubham Sharma	5.0
+Mithun S	4.67
+Saurabh Shukla	5.0
+Aditya_iot 	4.6
+Prateek _iot 	4.67
+Shivan K	4.57
+Hrisikesh Neogi	4.82
+Bharath 	4.7
+Deepranjan Gupta	4.72
+Nandani Gupta	4.69
+Harikrishnan Shaji	4.83
+Prabir Kumar Satapathy	4.9
+Mahesh Sarade	4.57
+Mithun S	4.69
+Prerna Singh	4.75
+Jaydeep Dixit	4.69
+Aditya Shinde	4.93
+Shivananda Sonwane	4.83
+Ishawant Kumar	4.67
+Nishtha Jain	5.0
+Manjunatha A	4.86
+Hrisikesh Neogi	4.88
+Nandani Gupta	4.67
+Aravind 	4.67
+Swati 	4.78
+Shivananda Sonwane	5.0
+Sanjeev Kumar	4.95
+Ayushi Mishra	4.61
+Madhulika G	4.67
+Shivananda Sonwane	4.75
+Ayushi Mishra	4.83
+Sanjeev Kumar	4.67
+Hrisikesh Neogi	4.85
+Shivan K	4.52
+Bharath 	4.86
+Aravind 	4.87
+Saurabh Shukla	5.0
+Jaydeep Dixit	4.59
+Prabir Kumar Satapathy	5.0
+Nishtha Jain	5.0
+Ishawant Kumar	5.0
+Khushboo Priya	4.67
+Boktiar Ahmed Bappy	5.0
+Manjunatha A	5.0
+Nishtha Jain	5.0
+Ishawant Kumar	5.0
+Boktiar Ahmed Bappy	4.88
+Anirudh 	5.0
+Prabir Kumar Satapathy	5.0
+Aditya_iot 	4.8
+Prateek _iot 	5.0
+Aravind 	5.0
+Aditya Shinde	4.57
+Shubham Sharma	4.8
+Prerna Singh	5.0
+Shivananda Sonwane	5.0
+Jaydeep Dixit	4.75
+Zeeshan 	4.69
+Swati 	4.56
+Bharath 	4.54
+Ayushi Mishra	4.7
+Hrisikesh Neogi	4.62
+Shivan K	4.73
+Aravind 	4.93
+Prateek _iot 	4.85
+Manjunatha A	4.57
+Rishav Dash	4.8
+Madhulika G	4.67
+Jayant Kumar	5.0
+Jayant Kumar	5.0
+Mukesh Rao 	5.0
+Ayushi Mishra	4.62
+Swati 	4.75
+Hrisikesh Neogi	4.64
+Nandani Gupta	4.75
+Sudhanshu Kumar	5.0
+Jaydeep Dixit	4.67
+Shubham Sharma	4.83
+Boktiar Ahmed Bappy	5.0
+Vivek 	5.0
+Sanjeev Kumar	4.82
+Ankitjha 	5.0
+Aditya Shinde	4.67
+Khushboo Priya	4.54
+Manjunatha A	5.0
+Nishtha Jain	5.0
+Khushboo Priya	4.58
+Bharath 	4.71
+Shivananda Sonwane	4.7
+Jaydeep Dixit	4.71
+Prerna Singh	4.67
+Aditya Shinde	4.78
+Boktiar Ahmed Bappy	4.88
+Bharath 	4.67
+Deepranjan Gupta	4.75
+Nandani Gupta	4.8
+Rishav Dash	4.6
+Shivananda Sonwane	5.0
+Madhulika G	5.0
+Madhulika G	5.0
+Bharath 	5.0
+Shubham Sharma	4.56
+Jaydeep Dixit	4.88
+Boktiar Ahmed Bappy	4.83
+Jawala Prakash	5.0
+Manjunatha A	4.75
+Manjunatha A	4.83
+Maitry 	4.79
+Swati 	4.78
+Shivan K	5.0
+Shubham Sharma	5.0
+Jaydeep Dixit	4.77
+Shivananda Sonwane	4.86
+Khushboo Priya	4.61
+Hrisikesh Neogi	4.56
+Time taken: 0.141 seconds, Fetched: 307 row(s)
+
+##How many feedback agent have recieved more than 4.5 average
+hive> select agent, feedback, avg_rating from agent_performance_feedback where avg_rating > 4.5;
+OK
+Ameya Jain	11	4.55
+Mahesh Sarade	7	4.71
+Mukesh 	8	4.62
+Saikumarreddy N	12	5.0
+Sanjeev Kumar	6	5.0
+Harikrishnan Shaji	7	4.57
+Sowmiya Sivakumar	16	4.75
+Boktiar Ahmed Bappy	4	4.75
+Shivananda Sonwane	1	5.0
+Ishawant Kumar	3	4.67
+Deepranjan Gupta	5	4.8
+Shivananda Sonwane	9	4.67
+Muskan Garg	4	5.0
+Aditya_iot 	10	4.6
+Mukesh 	9	4.67
+Chaitra K Hiremath	4	5.0
+Suraj S Bilgi	4	5.0
+Mithun S	15	4.8
+Wasim 	14	4.71
+Bharath 	13	4.85
+Ishawant Kumar	8	5.0
+Jawala Prakash	6	4.83
+Ayushi Mishra	3	5.0
+Ameya Jain	33	4.64
+Bharath 	19	4.79
+Ishawant Kumar	12	4.75
+Shivananda Sonwane	4	5.0
+Ishawant Kumar	8	4.88
+Prateek _iot 	6	4.83
+Sanjeev Kumar	11	4.82
+Nandani Gupta	13	4.62
+Saikumarreddy N	22	4.59
+Ameya Jain	16	5.0
+Khushboo Priya	14	4.71
+Wasim 	17	4.53
+Manjunatha A	13	4.54
+Bharath 	17	4.88
+Maitry 	2	5.0
+Ayushi Mishra	2	5.0
+Deepranjan Gupta	3	5.0
+Muskan Garg	10	4.6
+Prateek _iot 	6	5.0
+Saikumarreddy N	24	4.71
+Jaydeep Dixit	18	4.78
+Khushboo Priya	10	4.6
+Madhulika G	18	4.56
+Deepranjan Gupta	17	4.88
+Shivananda Sonwane	14	5.0
+Shivananda Sonwane	8	4.62
+Prateek _iot 	9	4.56
+Aditya_iot 	16	4.56
+Ameya Jain	20	4.8
+Sanjeev Kumar	23	4.57
+Prerna Singh	13	4.62
+Shivan K	9	4.78
+Bharath 	14	4.79
+Jawala Prakash	11	4.64
+Maitry 	4	5.0
+Deepranjan Gupta	16	4.69
+Shiva Srivastava	2	5.0
+Jawala Prakash	9	4.56
+Jaydeep Dixit	9	4.67
+Swati 	15	4.53
+Shubham Sharma	15	4.67
+Ameya Jain	18	4.56
+Aravind 	17	4.53
+Zeeshan 	20	4.85
+Saikumarreddy N	23	4.57
+Hrisikesh Neogi	20	4.8
+Bharath 	15	4.8
+Maitry 	19	4.84
+Prerna Singh	14	4.57
+Mahesh Sarade	17	4.53
+Sanjeev Kumar	26	4.54
+Saikumarreddy N	27	4.85
+Harikrishnan Shaji	18	4.89
+Shivan K	25	4.72
+Hrisikesh Neogi	17	4.53
+Mithun S	19	4.53
+Ishawant Kumar	5	5.0
+Shivananda Sonwane	13	4.85
+Jawala Prakash	4	4.75
+Aditya_iot 	2	5.0
+Nandani Gupta	15	4.53
+Sanjeev Kumar	19	4.84
+Chaitra K Hiremath	1	5.0
+Wasim 	16	4.56
+Madhulika G	12	4.92
+Khushboo Priya	9	5.0
+Prabir Kumar Satapathy	14	4.86
+Bharath 	16	4.69
+Ayushi Mishra	6	4.83
+Ameya Jain	26	4.65
+Jaydeep Dixit	20	4.55
+Shubham Sharma	22	4.55
+Wasim 	19	4.89
+Hrisikesh Neogi	14	4.64
+Manjunatha A	11	4.64
+Bharath 	18	4.67
+Ishawant Kumar	8	4.62
+Prerna Singh	13	4.62
+Ameya Jain	11	4.64
+Shubham Sharma	19	4.84
+Mahesh Sarade	15	4.67
+Zeeshan 	15	4.73
+Khushboo Priya	12	4.58
+Wasim 	16	4.94
+Manjunatha A	15	4.87
+Bharath 	18	4.89
+Aravind 	19	4.84
+Harikrishnan Shaji	16	4.81
+Shivananda Sonwane	11	4.55
+Maitry 	18	4.94
+Saikumarreddy N	35	4.69
+Sanjeev Kumar	15	4.53
+Jaydeep Dixit	17	4.82
+Aravind 	27	4.63
+Shivan K	17	4.76
+Khushboo Priya	20	4.75
+Wasim 	24	4.88
+Hrisikesh Neogi	12	4.67
+Prabir Kumar Satapathy	18	4.78
+Shivananda Sonwane	18	4.56
+Ayushi Mishra	17	4.59
+Prateek _iot 	8	5.0
+Jaydeep Dixit	11	4.91
+Shubham Sharma	11	4.73
+Rishav Dash	7	4.71
+Wasim 	16	4.81
+Shivan K	24	4.79
+Mithun S	25	4.8
+Bharath 	15	4.73
+Manjunatha A	14	4.57
+Ishawant Kumar	15	4.67
+Khushboo Priya	6	5.0
+Boktiar Ahmed Bappy	10	4.6
+Manjunatha A	7	4.57
+Hrisikesh Neogi	22	4.91
+Saikumarreddy N	17	4.82
+Aravind 	18	4.67
+Wasim 	15	4.6
+Sudhanshu Kumar	1	5.0
+Madhulika G	3	5.0
+Sanjeev Kumar	9	4.56
+Nandani Gupta	14	4.64
+Saikumarreddy N	24	4.67
+Aravind 	24	4.54
+Shubham Sharma	10	4.9
+Aditya Shinde	15	4.53
+Prerna Singh	6	5.0
+Sandipan Saha	1	5.0
+Manjunatha A	2	5.0
+Boktiar Ahmed Bappy	3	5.0
+Nishtha Jain	4	5.0
+Khushboo Priya	4	4.75
+Nishtha Jain	3	5.0
+Ishawant Kumar	6	5.0
+Jaydeep Dixit	10	4.9
+Shivananda Sonwane	8	4.88
+Shubham Sharma	13	4.92
+Prerna Singh	11	4.64
+Harikrishnan Shaji	9	4.78
+Sanjeev Kumar	18	4.61
+Prateek _iot 	3	5.0
+Aditya_iot 	5	4.8
+Shivan K	11	5.0
+Deepranjan Gupta	4	5.0
+Bharath 	12	4.58
+Aravind 	13	4.77
+Wasim 	9	4.78
+Ameya Jain	15	4.53
+Harikrishnan Shaji	10	4.7
+Manjunatha A	18	4.67
+Khushboo Priya	10	4.8
+Maitry 	11	4.73
+Swati 	14	4.64
+Swati 	12	4.67
+Maitry 	13	4.85
+Madhulika G	14	4.71
+Prateek _iot 	5	5.0
+Wasim 	10	4.6
+Bharath 	7	4.71
+Aravind 	17	4.65
+Shubham Sharma	13	4.92
+Shivananda Sonwane	11	4.73
+Prerna Singh	6	4.67
+Aditya Shinde	9	5.0
+Prabir Kumar Satapathy	4	4.75
+Ishawant Kumar	3	4.67
+Khushboo Priya	3	4.67
+Harikrishnan Shaji	14	4.64
+Aditya Shinde	9	4.89
+Shubham Sharma	13	5.0
+Mithun S	21	4.67
+Saurabh Shukla	2	5.0
+Aditya_iot 	5	4.6
+Prateek _iot 	3	4.67
+Shivan K	7	4.57
+Hrisikesh Neogi	17	4.82
+Bharath 	10	4.7
+Deepranjan Gupta	18	4.72
+Nandani Gupta	13	4.69
+Harikrishnan Shaji	6	4.83
+Prabir Kumar Satapathy	10	4.9
+Mahesh Sarade	7	4.57
+Mithun S	13	4.69
+Prerna Singh	4	4.75
+Jaydeep Dixit	13	4.69
+Aditya Shinde	15	4.93
+Shivananda Sonwane	12	4.83
+Ishawant Kumar	6	4.67
+Nishtha Jain	5	5.0
+Manjunatha A	7	4.86
+Hrisikesh Neogi	17	4.88
+Nandani Gupta	9	4.67
+Aravind 	12	4.67
+Swati 	27	4.78
+Shivananda Sonwane	4	5.0
+Sanjeev Kumar	20	4.95
+Ayushi Mishra	18	4.61
+Madhulika G	3	4.67
+Shivananda Sonwane	12	4.75
+Ayushi Mishra	6	4.83
+Sanjeev Kumar	6	4.67
+Hrisikesh Neogi	20	4.85
+Shivan K	21	4.52
+Bharath 	7	4.86
+Aravind 	15	4.87
+Saurabh Shukla	1	5.0
+Jaydeep Dixit	22	4.59
+Prabir Kumar Satapathy	3	5.0
+Nishtha Jain	2	5.0
+Ishawant Kumar	1	5.0
+Khushboo Priya	3	4.67
+Boktiar Ahmed Bappy	2	5.0
+Manjunatha A	2	5.0
+Nishtha Jain	2	5.0
+Ishawant Kumar	4	5.0
+Boktiar Ahmed Bappy	8	4.88
+Anirudh 	2	5.0
+Prabir Kumar Satapathy	4	5.0
+Aditya_iot 	5	4.8
+Prateek _iot 	1	5.0
+Aravind 	1	5.0
+Aditya Shinde	7	4.57
+Shubham Sharma	5	4.8
+Prerna Singh	6	5.0
+Shivananda Sonwane	4	5.0
+Jaydeep Dixit	4	4.75
+Zeeshan 	13	4.69
+Swati 	18	4.56
+Bharath 	13	4.54
+Ayushi Mishra	10	4.7
+Hrisikesh Neogi	21	4.62
+Shivan K	15	4.73
+Aravind 	15	4.93
+Prateek _iot 	13	4.85
+Manjunatha A	14	4.57
+Rishav Dash	5	4.8
+Madhulika G	12	4.67
+Jayant Kumar	4	5.0
+Jayant Kumar	3	5.0
+Mukesh Rao 	1	5.0
+Ayushi Mishra	13	4.62
+Swati 	8	4.75
+Hrisikesh Neogi	14	4.64
+Nandani Gupta	12	4.75
+Sudhanshu Kumar	1	5.0
+Jaydeep Dixit	9	4.67
+Shubham Sharma	12	4.83
+Boktiar Ahmed Bappy	2	5.0
+Vivek 	3	5.0
+Sanjeev Kumar	11	4.82
+Ankitjha 	1	5.0
+Aditya Shinde	9	4.67
+Khushboo Priya	13	4.54
+Manjunatha A	13	5.0
+Nishtha Jain	2	5.0
+Khushboo Priya	12	4.58
+Bharath 	14	4.71
+Shivananda Sonwane	10	4.7
+Jaydeep Dixit	17	4.71
+Prerna Singh	9	4.67
+Aditya Shinde	9	4.78
+Boktiar Ahmed Bappy	17	4.88
+Bharath 	9	4.67
+Deepranjan Gupta	20	4.75
+Nandani Gupta	15	4.8
+Rishav Dash	15	4.6
+Shivananda Sonwane	1	5.0
+Madhulika G	2	5.0
+Madhulika G	3	5.0
+Bharath 	14	5.0
+Shubham Sharma	9	4.56
+Jaydeep Dixit	16	4.88
+Boktiar Ahmed Bappy	6	4.83
+Jawala Prakash	3	5.0
+Manjunatha A	4	4.75
+Manjunatha A	12	4.83
+Maitry 	14	4.79
+Swati 	9	4.78
+Shivan K	1	5.0
+Shubham Sharma	13	5.0
+Jaydeep Dixit	13	4.77
+Shivananda Sonwane	14	4.86
+Khushboo Priya	18	4.61
+Hrisikesh Neogi	9	4.56
+Time taken: 0.143 seconds, Fetched: 307 row(s)
+
+## Average weekly response time for each agent:
+
+## Find out the number of chat on which they have recieved a feedback:
+
+select agent, chats, feedback from agent_performance_feedback where chats > 0;
+
+
+Ishawant Kumar	23	17
+Ayushi Mishra	8	6
+Maitry 	10	10
+Jawala Prakash	31	19
+Ayushi Mishra	27	17
+Aditya_iot 	10	7
+Prateek _iot 	10	8
+Deepranjan Gupta	1	0
+Ameya Jain	37	26
+Jaydeep Dixit	30	20
+Shubham Sharma	41	22
+Zeeshan 	35	24
+Saikumarreddy N	36	28
+Wasim 	31	19
+Hrisikesh Neogi	23	14
+Harikrishnan Shaji	42	24
+Prabir Kumar Satapathy	33	32
+Rishav Dash	19	14
+Manjunatha A	22	11
+Bharath 	29	18
+Shivananda Sonwane	7	6
+Boktiar Ahmed Bappy	7	7
+Maitry 	34	19
+Jawala Prakash	34	19
+Ishawant Kumar	28	20
+Jawala Prakash	22	15
+Ishawant Kumar	20	8
+Aditya_iot 	7	3
+Prateek _iot 	18	7
+Prerna Singh	17	13
+Hrisikesh Neogi	22	15
+Swati 	25	13
+Ameya Jain	12	11
+Shubham Sharma	26	19
+Mahesh Sarade	20	15
+Zeeshan 	21	15
+Sanjeev Kumar	21	10
+Saikumarreddy N	21	17
+Nandani Gupta	17	11
+Khushboo Priya	16	12
+Madhulika G	24	14
+Wasim 	27	16
+Manjunatha A	23	15
+Mithun S	24	18
+Bharath 	23	18
+Aravind 	31	19
+Harikrishnan Shaji	29	16
+Sowmiya Sivakumar	22	14
+Nishtha Jain	16	10
+Ayushi Mishra	8	8
+Shivananda Sonwane	21	11
+Boktiar Ahmed Bappy	43	30
+Maitry 	49	33
+Maitry 	26	18
+Prateek _iot 	14	9
+Aditya_iot 	23	13
+Saikumarreddy N	40	35
+Prerna Singh	26	17
+Harikrishnan Shaji	34	20
+Nandani Gupta	35	19
+Sanjeev Kumar	24	15
+Mahesh Sarade	35	19
+Jaydeep Dixit	30	17
+Aravind 	40	27
+Shivan K	26	17
+Madhulika G	26	12
+Khushboo Priya	28	20
+Sowmiya Sivakumar	28	19
+Rishav Dash	24	12
+Wasim 	36	24
+Hrisikesh Neogi	26	12
+Prabir Kumar Satapathy	29	18
+Mithun S	55	40
+Shivananda Sonwane	23	18
+Ishawant Kumar	5	4
+Boktiar Ahmed Bappy	24	16
+Jawala Prakash	5	3
+Ayushi Mishra	29	19
+Deepranjan Gupta	6	4
+Ayushi Mishra	25	17
+Jawala Prakash	24	16
+Deepranjan Gupta	32	25
+Shivananda Sonwane	19	9
+Prateek _iot 	15	8
+Prerna Singh	28	18
+Jaydeep Dixit	23	11
+Shubham Sharma	31	11
+Nandani Gupta	26	18
+Harikrishnan Shaji	36	27
+Aditya_iot 	24	13
+Sanjeev Kumar	26	14
+Zeeshan 	41	25
+Ameya Jain	29	20
+Rishav Dash	20	7
+Wasim 	27	16
+Shivan K	29	24
+Mithun S	27	25
+Bharath 	25	15
+Prabir Kumar Satapathy	26	19
+Manjunatha A	25	14
+Boktiar Ahmed Bappy	31	25
+Nishtha Jain	28	19
+Ishawant Kumar	25	15
+Khushboo Priya	6	6
+Ishawant Kumar	14	8
+Khushboo Priya	14	5
+Nishtha Jain	15	13
+Boktiar Ahmed Bappy	18	10
+Manjunatha A	17	7
+Hrisikesh Neogi	33	22
+Saikumarreddy N	26	17
+Aravind 	32	18
+Wasim 	30	15
+Shivan K	20	15
+Nandani Gupta	26	15
+Mahesh Sarade	26	16
+Ameya Jain	23	15
+Prabir Kumar Satapathy	22	18
+Swati 	52	29
+Maitry 	51	30
+Rishav Dash	27	18
+Mithun S	33	26
+Sudhanshu Kumar	1	1
+Ayushi Mishra	30	22
+Sanjeev Kumar	35	20
+Shivananda Sonwane	7	4
+Madhulika G	8	3
+Madhulika G	26	15
+Sanjeev Kumar	17	9
+Ayushi Mishra	42	24
+Shivananda Sonwane	30	17
+Shivan K	26	16
+Hrisikesh Neogi	36	23
+Deepranjan Gupta	38	24
+Wasim 	37	17
+Nandani Gupta	35	14
+Saikumarreddy N	33	24
+Aravind 	35	24
+Prabir Kumar Satapathy	16	11
+Ameya Jain	18	13
+Shubham Sharma	21	10
+Mahesh Sarade	19	13
+Aditya Shinde	28	15
+Jaydeep Dixit	22	16
+Prerna Singh	14	6
+Jawala Prakash	44	14
+Mithun S	97	52
+Zeeshan 	92	35
+Sandipan Saha	1	1
+Manjunatha A	3	2
+Ishawant Kumar	3	3
+Khushboo Priya	3	2
+Boktiar Ahmed Bappy	4	3
+Nishtha Jain	4	4
+Sandipan Saha	9	4
+Khushboo Priya	9	4
+Nishtha Jain	7	3
+Ishawant Kumar	7	6
+Manjunatha A	12	9
+Boktiar Ahmed Bappy	13	8
+Aditya_iot 	32	15
+Ameya Jain	16	8
+Mahesh Sarade	14	12
+Jaydeep Dixit	20	10
+Shivananda Sonwane	15	8
+Shubham Sharma	20	13
+Prerna Singh	19	11
+Zeeshan 	23	16
+Jawala Prakash	25	12
+Aditya Shinde	17	8
+Harikrishnan Shaji	14	9
+Hitesh Choudhary	1	0
+Rishav Dash	44	33
+Swati 	54	37
+Madhulika G	37	26
+Maitry 	63	39
+Sanjeev Kumar	38	18
+Sanjeev Kumar	9	6
+Prateek _iot 	4	3
+Aditya_iot 	14	5
+Shivan K	17	11
+Saikumarreddy N	20	15
+Deepranjan Gupta	6	4
+Hrisikesh Neogi	21	15
+Bharath 	15	12
+Nandani Gupta	17	10
+Aravind 	16	13
+Wasim 	16	9
+Ayushi Mishra	17	12
+Mithun S	11	6
+Ameya Jain	22	15
+Harikrishnan Shaji	15	10
+Manjunatha A	20	18
+Nishtha Jain	20	13
+Khushboo Priya	16	10
+Ishawant Kumar	14	11
+Sandipan Saha	20	13
+Boktiar Ahmed Bappy	34	28
+Rishav Dash	20	17
+Madhulika G	18	11
+Maitry 	22	11
+Swati 	24	14
+Rishav Dash	2	0
+Swati 	20	12
+Maitry 	20	13
+Madhulika G	19	14
+Vivek 	6	2
+Aditya_iot 	10	6
+Prateek _iot 	15	5
+Wasim 	12	10
+Ayushi Mishra	16	7
+Bharath 	15	7
+Shivan K	15	11
+Hrisikesh Neogi	25	15
+Saikumarreddy N	10	9
+Aravind 	21	17
+Nandani Gupta	15	9
+Deepranjan Gupta	17	12
+Ameya Jain	14	7
+Mahesh Sarade	10	4
+Harikrishnan Shaji	15	10
+Shubham Sharma	19	13
+Shivananda Sonwane	18	11
+Prerna Singh	12	6
+Aditya Shinde	15	9
+Prabir Kumar Satapathy	5	4
+Jaydeep Dixit	23	13
+Jawala Prakash	23	8
+Zeeshan 	35	22
+Nishtha Jain	5	3
+Ishawant Kumar	3	3
+Manjunatha A	4	2
+Khushboo Priya	3	3
+Anirudh 	20	13
+Prateek _iot 	15	9
+Aditya_iot 	9	5
+Vivek 	15	7
+Jayant Kumar	18	13
+Rishav Dash	13	10
+Swati 	30	21
+Maitry 	31	24
+Madhulika G	31	18
+Sanjeev Kumar	16	10
+Harikrishnan Shaji	21	14
+Mahesh Sarade	9	5
+Prerna Singh	11	4
+Shivananda Sonwane	18	12
+Aditya Shinde	18	9
+Jaydeep Dixit	21	11
+Jawala Prakash	23	17
+Shubham Sharma	18	13
+Mithun S	28	21
+Prabir Kumar Satapathy	11	7
+Zeeshan 	31	24
+Manjunatha A	22	15
+Ishawant Kumar	20	12
+Nishtha Jain	28	15
+Khushboo Priya	24	17
+Anirudh 	15	13
+Vivek 	9	3
+Saurabh Shukla	2	2
+Aditya_iot 	7	5
+Prateek _iot 	8	3
+Shivan K	14	7
+Ayushi Mishra	18	12
+Hrisikesh Neogi	23	17
+Bharath 	16	10
+Aravind 	19	14
+Wasim 	18	14
+Deepranjan Gupta	26	18
+Nandani Gupta	20	13
+Harikrishnan Shaji	7	6
+Prabir Kumar Satapathy	13	10
+Mahesh Sarade	12	7
+Mithun S	19	13
+Zeeshan 	13	6
+Prerna Singh	6	4
+Shubham Sharma	13	10
+Jaydeep Dixit	17	13
+Aditya Shinde	21	15
+Shivananda Sonwane	14	12
+Jawala Prakash	23	10
+Nishtha Jain	23	16
+Khushboo Priya	18	11
+Manjunatha A	27	19
+Ishawant Kumar	11	6
+Ishawant Kumar	10	6
+Nishtha Jain	13	5
+Khushboo Priya	13	10
+Manjunatha A	16	7
+Harikrishnan Shaji	11	8
+Mahesh Sarade	6	4
+Shivan K	25	17
+Hrisikesh Neogi	32	17
+Nandani Gupta	21	9
+Bharath 	11	5
+Deepranjan Gupta	37	19
+Aravind 	25	12
+Anirudh 	2	2
+Rishav Dash	29	17
+Jayant Kumar	31	17
+Swati 	55	27
+Shivananda Sonwane	8	4
+Madhulika G	9	7
+Sanjeev Kumar	37	20
+Ayushi Mishra	25	18
+Madhulika G	4	3
+Shivananda Sonwane	15	12
+Ayushi Mishra	18	6
+Sanjeev Kumar	12	6
+Nandani Gupta	27	11
+Hrisikesh Neogi	35	20
+Shivan K	29	21
+Bharath 	15	7
+Aravind 	33	15
+Deepranjan Gupta	31	15
+Saurabh Shukla	1	1
+Maneesh 	2	2
+Harikrishnan Shaji	14	5
+Mahesh Sarade	25	9
+Shubham Sharma	28	13
+Jaydeep Dixit	32	22
+Aditya Shinde	27	14
+Prerna Singh	25	15
+Prabir Kumar Satapathy	9	3
+Anirudh 	26	8
+Nishtha Jain	2	2
+Ishawant Kumar	3	1
+Khushboo Priya	4	3
+Boktiar Ahmed Bappy	4	2
+Manjunatha A	3	2
+Nishtha Jain	5	2
+Khushboo Priya	7	6
+Manjunatha A	10	8
+Ishawant Kumar	11	4
+Vivek 	10	5
+Boktiar Ahmed Bappy	10	8
+Mahesh Sarade	18	11
+Anirudh 	10	2
+Anurag Tiwari	3	2
+Mukesh Rao 	1	1
+Prabir Kumar Satapathy	5	4
+Aditya_iot 	6	5
+Mithun S	9	7
+Prateek _iot 	4	1
+Harikrishnan Shaji	13	7
+Aravind 	1	1
+Aditya Shinde	8	7
+Shubham Sharma	11	5
+Prerna Singh	9	6
+Shivananda Sonwane	8	4
+Jaydeep Dixit	9	4
+Jawala Prakash	10	10
+Zeeshan 	16	13
+Jayant Kumar	15	6
+Rishav Dash	22	17
+Sanjeev Kumar	19	11
+Maitry 	30	27
+Madhulika G	30	11
+Swati 	27	18
+Sanjeev Kumar	5	2
+Bharath 	15	13
+Nandani Gupta	22	16
+Ayushi Mishra	17	10
+Hrisikesh Neogi	26	21
+Deepranjan Gupta	30	19
+Shivan K	24	15
+Aravind 	24	15
+Anurag Tiwari	1	1
+Harikrishnan Shaji	5	1
+Mithun S	2	1
+Mukesh Rao 	3	3
+Prabir Kumar Satapathy	4	3
+Saurabh Shukla	6	3
+Maneesh 	1	0
+Aditya_iot 	10	6
+Prateek _iot 	18	13
+Zeeshan 	29	13
+Wasim 	34	26
+Nishtha Jain	25	20
+Ishawant Kumar	58	24
+Manjunatha A	33	14
+Boktiar Ahmed Bappy	23	12
+Khushboo Priya	34	19
+Rishav Dash	6	5
+Madhulika G	17	12
+Jayant Kumar	8	4
+Swati 	15	9
+Maitry 	20	12
+Madhulika G	12	9
+Jayant Kumar	8	3
+Rishav Dash	14	11
+Mukesh Rao 	1	1
+Shivan_S 	7	4
+Ayushi Mishra	20	13
+Maitry 	17	12
+Swati 	15	8
+Hrisikesh Neogi	18	14
+Bharath 	15	11
+Deepranjan Gupta	29	21
+Prateek _iot 	1	0
+Dibyanshu 	1	0
+Nandani Gupta	23	12
+Sudhanshu Kumar	1	1
+Shivan K	1	0
+Aditya Shinde	18	11
+Jaydeep Dixit	17	9
+Prerna Singh	16	8
+Shubham Sharma	19	12
+Shivananda Sonwane	19	14
+Anirudh 	1	0
+Jawala Prakash	25	15
+Boktiar Ahmed Bappy	3	2
+Manjunatha A	2	0
+Nishtha Jain	2	2
+Ashad Nasim	3	2
+Khushboo Priya	2	0
+Anirudh 	7	1
+Maneesh 	1	1
+Shivan K	1	0
+Vivek 	4	3
+Rishav Dash	21	11
+Ameya Jain	1	1
+Madhulika G	18	12
+Swati 	27	12
+Jayant Kumar	12	6
+Maitry 	26	13
+Sanjeev Kumar	17	11
+Ashad Nasim	15	7
+Mahak 	7	5
+Samprit 	1	0
+Ankitjha 	1	1
+Prabir Kumar Satapathy	1	1
+Mithun S	1	1
+Shivananda Sonwane	12	5
+Shubham Sharma	14	11
+Aditya Shinde	20	9
+Jaydeep Dixit	20	12
+Prerna Singh	7	3
+Jawala Prakash	22	10
+Khushboo Priya	25	13
+Boktiar Ahmed Bappy	24	18
+Nishtha Jain	21	15
+Manjunatha A	23	13
+Nishtha Jain	6	2
+Khushboo Priya	15	12
+Ayushi Mishra	29	20
+Bharath 	28	14
+Nandani Gupta	32	15
+Shivan K	3	2
+Deepranjan Gupta	26	18
+Shivananda Sonwane	26	10
+Jaydeep Dixit	28	17
+Prerna Singh	18	9
+Aditya Shinde	14	9
+Shubham Sharma	21	12
+Hrisikesh Neogi	53	26
+Jawala Prakash	6	5
+Boktiar Ahmed Bappy	22	14
+Manjunatha A	23	15
+Jawala Prakash	17	10
+Boktiar Ahmed Bappy	23	17
+Manjunatha A	20	9
+Aditya Shinde	34	19
+Bharath 	11	9
+Deepranjan Gupta	40	20
+Nandani Gupta	38	15
+Shivan K	2	1
+Maitry 	34	21
+Jayant Kumar	26	17
+Rishav Dash	25	15
+Swati 	43	21
+Sanjeev Kumar	25	14
+Shivananda Sonwane	3	1
+Madhulika G	3	2
+Ayushi Mishra	37	22
+Madhulika G	4	3
+Shivananda Sonwane	25	10
+Sanjeev Kumar	14	12
+Ayushi Mishra	27	12
+Nandani Gupta	75	37
+Aditya Shinde	57	28
+Bharath 	28	14
+Deepranjan Gupta	52	24
+Hrisikesh Neogi	47	28
+Prerna Singh	33	20
+Shubham Sharma	24	9
+Jaydeep Dixit	36	16
+Khushboo Priya	50	25
+Boktiar Ahmed Bappy	6	6
+Jawala Prakash	5	3
+Manjunatha A	6	4
+Manjunatha A	17	12
+Jawala Prakash	11	6
+Saurabh Shukla	7	2
+Jayant Kumar	9	4
+Boktiar Ahmed Bappy	19	11
+Rishav Dash	22	11
+Maitry 	29	14
+Madhulika G	24	14
+Swati 	21	9
+Sanjeev Kumar	22	13
+Shivan K	4	1
+Prerna Singh	18	11
+Shubham Sharma	22	13
+Jaydeep Dixit	25	13
+Shivananda Sonwane	23	14
+Khushboo Priya	24	18
+Hrisikesh Neogi	15	9
+Tarun 	22	6
+Time taken: 0.105 seconds, Fetched: 745 row(s)
+
+
+
+
+
+
+
+
+
+
+
+
